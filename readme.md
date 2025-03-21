@@ -50,20 +50,3 @@ Deploy on GitHub Pages / Vercel
  ▼
 End
 
-
-
-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
-
-
-
-
-curl -X POST "https://api.deepseek.com/v1/chat/completions" \
--H "Authorization: Bearer sk-f9cec80e2c227c127b30c6bf8db385ae0f539ef25d2403047d9ab446448b0fdd" \
--H "Content-Type: application/json" \
--d '{
-  "model": "deepseek-chat",
-  "messages": [{"role": "user", "content": "Test message"}]
-}'
-
-
-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
