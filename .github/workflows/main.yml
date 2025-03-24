@@ -29,4 +29,4 @@ jobs:
           My_Api_Key: ${{ secrets.My_Api_Key }}  # Access the secret API key
         run: |
           echo "Running Python code with My_Api_Key"
-          python main.py  # Replace 'main.py' with your Python script if different
+          python app.py
