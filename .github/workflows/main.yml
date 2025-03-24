@@ -3,7 +3,7 @@ name: Python Application Workflow
 on:
   push:
     branches:
-      - main  # Trigger workflow on push to the main branch
+      - main  # Trigger workflow on pushes to the main branch
   pull_request:
     branches:
       - main
@@ -19,22 +19,19 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: 3.10  # More stable Python version
-
-    - name: Clear pip cache  # Optional: Clear pip cache to avoid cached dependency issues
-      run: sudo rm -rf ~/.cache/pip
+        python-version: '3.10'  # This sets up Python 3.10
 
     - name: Install dependencies
       run: |
         python -m venv venv
         source venv/bin/activate
-        pip install --upgrade pip  # Upgrade pip to the latest version
-        pip install --use-deprecated=legacy-resolver -r requirements.txt  # Install dependencies with deprecated resolver for compatibility
+        python -m pip install --upgrade pip setuptools wheel  # Upgrading core tools for building packages
+        pip install -r requirements.txt  # Install project dependencies
 
     - name: Run the Python script
       env:
-        MY_API_KEY: ${{ secrets.My_Api_Key }}  # Inject your GitHub secret
+        MY_API_KEY: ${{ secrets.My_Api_Key }}  # Access the API key from GitHub secrets
       run: |
         source venv/bin/activate
         echo "Running Python code with My_Api_Key"
-        python app.py  # Run your app (replace with your entry file if needed)
+        python app.py
