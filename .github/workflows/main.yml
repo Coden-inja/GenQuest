@@ -1,4 +1,4 @@
-name: Python Application Workflow
+name: Python CI Workflow
 
 on:
   push:
@@ -13,25 +13,37 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Check out repository code
+        uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
 
-    - name: Install dependencies
-      run: |
-        python -m venv venv
-        source venv/bin/activate
-        python -m pip install --upgrade pip
-        python -m pip install --upgrade setuptools==65.5.0  # Downgrade setuptools to a stable version
-        pip install -r requirements.txt
+      - name: Upgrade pip and setuptools
+        run: |
+          pip install --upgrade pip setuptools
 
-    - name: Run the Python script
-      env:
-        MY_API_KEY: ${{ secrets.My_Api_Key }}
-      run: |
-        source venv/bin/activate
-        python app.py
+      - name: Download and Patch fpdf (Fix setup.cfg issue)
+        run: |
+          pip download fpdf==1.7.2
+          tar -xzf fpdf-1.7.2.tar.gz
+          sed -i 's/description-file/description_file/' fpdf-1.7.2/setup.cfg
+          pip install ./fpdf-1.7.2
+
+      - name: Install Project Dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Set API Key as Environment Variable
+        env:
+          My_Api_Key: ${{ secrets.My_Api_Key }}
+        run: |
+          echo "Using API key..."  # This accesses the API key from GitHub Secrets
+
+      - name: Run app.py
+        env:
+          My_Api_Key: ${{ secrets.My_Api_Key }}  # Ensures API key is passed when running app.py
+        run: |
+          python app.py
