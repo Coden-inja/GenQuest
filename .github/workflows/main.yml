@@ -25,12 +25,12 @@ jobs:
         run: |
           pip install --upgrade pip setuptools
 
-      - name: Download and Patch fpdf (Fix setup.cfg issue)
+      - name: Clone and Patch fpdf
         run: |
-          pip download fpdf==1.7.2
-          tar -xzf fpdf-1.7.2.tar.gz
-          sed -i 's/description-file/description_file/' fpdf-1.7.2/setup.cfg
-          pip install ./fpdf-1.7.2
+          git clone https://github.com/reingart/fpdf.git
+          cd fpdf
+          sed -i 's/description-file/description_file/' setup.cfg  # Fix the dash/underscore issue
+          pip install .
 
       - name: Install Project Dependencies
         run: |
@@ -40,10 +40,10 @@ jobs:
         env:
           My_Api_Key: ${{ secrets.My_Api_Key }}
         run: |
-          echo "Using API key..."  # This accesses the API key from GitHub Secrets
+          echo "Using API key..."  
 
       - name: Run app.py
         env:
-          My_Api_Key: ${{ secrets.My_Api_Key }}  # Ensures API key is passed when running app.py
+          My_Api_Key: ${{ secrets.My_Api_Key }}
         run: |
           python app.py
