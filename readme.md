@@ -50,3 +50,8 @@ Deploy on GitHub Pages / Vercel
  ▼
 End
 
+
+
+
+# Trigger GitHub Actions workflow manually
+
