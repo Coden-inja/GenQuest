@@ -1,0 +1,32 @@
+name: CI/CD Workflow for Project
+
+on:
+  push:
+    branches:
+      - main  # Run the workflow on push to the main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Use the latest Ubuntu VM
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3  # Checkout your code
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'  # Replace with your Python version if needed
+
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt  # Install any dependencies
+
+      - name: Run Python code with GitHub Secret
+        env:
+          My_Api_Key: ${{ secrets.My_Api_Key }}  # Access the secret API key
+        run: |
+          echo "Running Python code with My_Api_Key"
+          python main.py  # Replace 'main.py' with your Python script if different
