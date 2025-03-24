@@ -1,7 +1,10 @@
-name: Python application
+name: Python Application Workflow
 
 on:
   push:
+    branches:
+      - main  # Trigger workflow on push to the main branch
+  pull_request:
     branches:
       - main
 
@@ -10,15 +13,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: 3.x
+        python-version: 3.10  # More stable Python version
+
+    - name: Clear pip cache  # Optional: Clear pip cache to avoid cached dependency issues
+      run: sudo rm -rf ~/.cache/pip
 
     - name: Install dependencies
-      run: pip install -r requirements.txt  # Install any dependencies
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+        pip install --upgrade pip  # Upgrade pip to the latest version
+        pip install --use-deprecated=legacy-resolver -r requirements.txt  # Install dependencies with deprecated resolver for compatibility
 
-    - name: Run Python code
-      run: python app.py  # Run your main Python file
+    - name: Run the Python script
+      env:
+        MY_API_KEY: ${{ secrets.My_Api_Key }}  # Inject your GitHub secret
+      run: |
+        source venv/bin/activate
+        echo "Running Python code with My_Api_Key"
+        python app.py  # Run your app (replace with your entry file if needed)
